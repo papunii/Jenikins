@@ -1,0 +1,45 @@
+pipeline {
+    agent any
+    
+    tools{
+        maven "maven-3.9.9"
+    }
+
+    stages {
+        stage('git clone') {
+            steps {
+                git branch: 'develop', url: 'https://github.com/ashokitschool/maven-web-app.git'
+            }
+        }
+        stage('mvn package'){
+            steps {
+                sh  'mvn clean package'
+            }
+        }
+        stage('deployment'){
+            steps{
+                sshagent(['tomcat']){
+                    sh 'scp -o StrictHostKeyChecking=no target/01-maven-web-app.war ec2-user@3.110.44.208:/home/ec2-user/apache-tomcat-9.0.98/webapps'
+                }
+            }
+        }
+    }
+     post{
+        failure{
+            emailext(
+                subject: "Build Failed: ${currentBuild.fullDisplayName}",
+                body: "The build ${currentBuild.fullDisplayName} failed. Pleasecheck the console for more details",
+                to: 'snjrp3@gmail.com',
+                attachLog: true
+                )
+        }
+        success{
+            emailext(
+                subject: "Build successful: ${currentBuild.fullDisplayName}",
+                body: "The build ${currentBuild.fullDisplayName} was successful.",
+                to: 'snjrp3@gmail.com',
+                attachLog: true   
+                )
+        }
+    }
+}
