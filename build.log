@@ -1,0 +1,125 @@
+Started by user satya pradhan
+[Pipeline] Start of Pipeline
+[Pipeline] node
+Running on Jenkins in /var/lib/jenkins/workspace/pipeline-2
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Declarative: Tool Install)
+[Pipeline] tool
+[Pipeline] envVarsForTool
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (git clone)
+[Pipeline] tool
+[Pipeline] envVarsForTool
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] git
+The recommended git tool is: NONE
+No credentials specified
+ > git rev-parse --resolve-git-dir /var/lib/jenkins/workspace/pipeline-2/.git # timeout=10
+Fetching changes from the remote Git repository
+ > git config remote.origin.url https://github.com/ashokitschool/maven-web-app.git # timeout=10
+Fetching upstream changes from https://github.com/ashokitschool/maven-web-app.git
+ > git --version # timeout=10
+ > git --version # 'git version 2.43.0'
+ > git fetch --tags --force --progress -- https://github.com/ashokitschool/maven-web-app.git +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git rev-parse refs/remotes/origin/develop^{commit} # timeout=10
+Checking out Revision 238ff7deca4eddf18d8c0c3587b9e260f2578e2e (refs/remotes/origin/develop)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f 238ff7deca4eddf18d8c0c3587b9e260f2578e2e # timeout=10
+ > git branch -a -v --no-abbrev # timeout=10
+ > git branch -D develop # timeout=10
+ > git checkout -b develop 238ff7deca4eddf18d8c0c3587b9e260f2578e2e # timeout=10
+Commit message: "Update Scripted-Jenkinsfile"
+ > git rev-list --no-walk 238ff7deca4eddf18d8c0c3587b9e260f2578e2e # timeout=10
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (mvn package)
+[Pipeline] tool
+[Pipeline] envVarsForTool
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] sh
++ mvn clean package
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] --------------------< in.ashokit:01-maven-web-appn >--------------------
+[INFO] Building 01-maven-web-app Maven Webapp 1.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ war ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.2.0:clean (default-clean) @ 01-maven-web-appn ---
+[INFO] Deleting /var/lib/jenkins/workspace/pipeline-2/target
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ 01-maven-web-appn ---
+[WARNING] Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+[INFO] skip non existing resourceDirectory /var/lib/jenkins/workspace/pipeline-2/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ 01-maven-web-appn ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ 01-maven-web-appn ---
+[WARNING] Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+[INFO] skip non existing resourceDirectory /var/lib/jenkins/workspace/pipeline-2/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ 01-maven-web-appn ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- surefire:3.2.5:test (default-test) @ 01-maven-web-appn ---
+[INFO] No tests to run.
+[INFO] 
+[INFO] --- war:3.4.0:war (default-war) @ 01-maven-web-appn ---
+[INFO] Packaging webapp
+[INFO] Assembling webapp [01-maven-web-appn] in [/var/lib/jenkins/workspace/pipeline-2/target/01-maven-web-app]
+[INFO] Processing war project
+[INFO] Copying webapp resources [/var/lib/jenkins/workspace/pipeline-2/src/main/webapp]
+[INFO] Building war: /var/lib/jenkins/workspace/pipeline-2/target/01-maven-web-app.war
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  1.838 s
+[INFO] Finished at: 2025-01-06T08:13:42Z
+[INFO] ------------------------------------------------------------------------
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (deployment)
+[Pipeline] tool
+[Pipeline] envVarsForTool
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] sshagent
+[ssh-agent] Using credentials ec2-user (tomcat)
+$ ssh-agent
+SSH_AUTH_SOCK=/tmp/ssh-wqXHs3Rvs6N7/agent.2730
+SSH_AGENT_PID=2733
+Running ssh-add (command line suppressed)
+Identity added: /var/lib/jenkins/workspace/pipeline-2@tmp/private_key_13233108083036402068.key (/var/lib/jenkins/workspace/pipeline-2@tmp/private_key_13233108083036402068.key)
+[ssh-agent] Started.
+[Pipeline] {
+[Pipeline] sh
++ scp -o StrictHostKeyChecking=no target/01-maven-web-app.war ec2-user@3.110.44.208:/home/ec2-user/apache-tomcat-9.0.98/webapps
+[Pipeline] }
+$ ssh-agent -k
+unset SSH_AUTH_SOCK;
+unset SSH_AGENT_PID;
+echo Agent pid 2733 killed;
+[ssh-agent] Stopped.
+[Pipeline] // sshagent
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Declarative: Post Actions)
+[Pipeline] emailext
+Sending email to: snjrp3@gmail.com
